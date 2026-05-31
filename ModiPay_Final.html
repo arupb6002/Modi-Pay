@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Modi Pay</title>
+<script src="https://unpkg.com/html5-qrcode"></script>
+<style>
+body{margin:0;font-family:Arial;background:#f4f6f9}
+.screen{display:none;padding:15px;padding-bottom:80px}
+.active{display:block}
+.header{background:linear-gradient(135deg,#ff7a00,#ffb000);color:#fff;text-align:center;padding:20px;border-radius:0 0 20px 20px}
+.card{background:#fff;border-radius:15px;padding:15px;margin-top:15px;box-shadow:0 2px 8px rgba(0,0,0,.1)}
+input{width:100%;padding:12px;margin:8px 0;border:1px solid #ddd;border-radius:10px;box-sizing:border-box}
+button{width:100%;padding:12px;border:none;border-radius:10px;background:#ff8c00;color:#fff;font-weight:bold;margin-top:8px}
+.nav{position:fixed;bottom:0;left:0;right:0;background:#fff;display:flex;border-top:1px solid #ddd}
+.nav button{background:#fff;color:#333;border-radius:0}
+#reader{width:100%}
+.banner{background:#fff3cd;padding:10px;border-radius:10px}
+</style>
+</head>
+<body>
+
+<div id="home" class="screen active">
+<div class="header">
+<h1>Modi Pay</h1>
+<p>Paisa Nahi, Vishwas Chalega!</p>
+</div>
+
+<div class="card banner">
+₹ PIN aapki UPI app me hi enter hoga.
+</div>
+
+<div class="card">
+<h3>Send Money</h3>
+<input id="upi" placeholder="UPI ID">
+<input id="amt" type="number" placeholder="Amount">
+<button onclick="payNow()">Pay Now</button>
+</div>
+</div>
+
+<div id="scan" class="screen">
+<div class="header"><h2>Scan QR</h2></div>
+<div class="card">
+<div id="reader"></div>
+<button onclick="startScanner()">Start Scanner</button>
+</div>
+</div>
+
+<div id="history" class="screen">
+<div class="header"><h2>History</h2></div>
+<div class="card">
+<ul id="historyList"></ul>
+</div>
+</div>
+
+<div id="profile" class="screen">
+<div class="header"><h2>Profile</h2></div>
+<div class="card">
+<p>Modi Pay Demo Web App</p>
+</div>
+</div>
+
+<div class="nav">
+<button onclick="show('home')">Home</button>
+<button onclick="show('scan')">Scan</button>
+<button onclick="show('history')">History</button>
+<button onclick="show('profile')">Profile</button>
+</div>
+
+<script>
+function show(id){
+document.querySelectorAll('.screen').forEach(x=>x.classList.remove('active'));
+document.getElementById(id).classList.add('active');
+}
+
+function saveHistory(upi,amt){
+let h=JSON.parse(localStorage.getItem('mp_history')||'[]');
+h.unshift({upi,amt,time:new Date().toLocaleString()});
+localStorage.setItem('mp_history',JSON.stringify(h));
+loadHistory();
+}
+
+function loadHistory(){
+let h=JSON.parse(localStorage.getItem('mp_history')||'[]');
+let out='';
+h.forEach(x=>{
+out+=`<li>${x.amt} INR → ${x.upi}<br><small>${x.time}</small></li><hr>`;
+});
+document.getElementById('historyList').innerHTML=out||'No transactions';
+}
+loadHistory();
+
+function payNow(){
+let upi=document.getElementById('upi').value;
+let amt=document.getElementById('amt').value;
+if(!upi||!amt){alert('Enter UPI ID and Amount');return;}
+saveHistory(upi,amt);
+window.location.href='upi://pay?pa='+encodeURIComponent(upi)+'&pn=Merchant&am='+amt+'&cu=INR';
+}
+
+function startScanner(){
+if(typeof Html5Qrcode==='undefined'){
+alert('Internet required to load scanner library.');
+return;
+}
+const qr=new Html5Qrcode("reader");
+qr.start(
+{facingMode:"environment"},
+{fps:10,qrbox:250},
+function(text){
+if(text.includes("upi://pay")){
+try{
+let u=new URL(text);
+let p=new URLSearchParams(u.search);
+document.getElementById('upi').value=p.get('pa')||'';
+document.getElementById('amt').value=p.get('am')||'';
+show('home');
+qr.stop();
+}catch(e){alert(text);}
+}else{
+alert(text);
+}
+}
+).catch(err=>alert("Camera error: "+err));
+}
+</script>
+</body>
+</html>
