@@ -1,656 +1,252 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="h-full">
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>ModiPay • Seamless UPI</title>
-    <!-- html5-qrcode scanner -->
-    <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
-    <!-- Font Awesome Icons (clean, modern icons) -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent;
-        }
-
-        body {
-            background: radial-gradient(circle at 20% 30%, #fdf8ed, #fff6e8);
-            font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, sans-serif;
-            overflow-x: hidden;
-            height: 100vh;
-            position: relative;
-        }
-
-        /* Modern smooth glassmorphic base */
-        .app-container {
-            max-width: 500px;
-            margin: 0 auto;
-            height: 100vh;
-            background: rgba(255, 255, 255, 0.92);
-            backdrop-filter: blur(2px);
-            box-shadow: 0 0 40px rgba(0, 0, 0, 0.05);
-            position: relative;
-            overflow-y: auto;
-            overflow-x: hidden;
-            scroll-behavior: smooth;
-        }
-
-        /* floating orbs */
-        .orb {
-            position: fixed;
-            border-radius: 50%;
-            filter: blur(55px);
-            z-index: -1;
-            pointer-events: none;
-        }
-        .orb-1 { width: 260px; height: 260px; background: #ffb34740; top: -80px; left: -60px; }
-        .orb-2 { width: 300px; height: 300px; background: #3ccf9140; bottom: -100px; right: -80px; }
-        .orb-3 { width: 180px; height: 180px; background: #ff8c1a30; top: 40%; right: 10%; }
-
-        /* splash screen premium */
-        .splash {
-            position: fixed;
-            inset: 0;
-            background: #ffffff;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 10000;
-            animation: vanishSplash 1.2s cubic-bezier(0.2, 0.9, 0.4, 1.1) forwards 0.8s;
-            backdrop-filter: blur(0px);
-        }
-        .splash-content {
-            text-align: center;
-            transform: scale(0.95);
-            animation: pulseLogo 0.7s ease-out alternate infinite;
-        }
-        .modi-splash {
-            font-size: 58px;
-            font-weight: 800;
-            background: linear-gradient(135deg, #FF7E05, #1FAA59);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            letter-spacing: -0.5px;
-        }
-        @keyframes vanishSplash {
-            0% { opacity: 1; visibility: visible; backdrop-filter: blur(0px);}
-            80% { opacity: 0.6; }
-            100% { opacity: 0; visibility: hidden; backdrop-filter: blur(10px); display: none; }
-        }
-        @keyframes pulseLogo {
-            0% { transform: scale(0.95); opacity: 0.7; }
-            100% { transform: scale(1.05); opacity: 1; }
-        }
-
-        /* page transitions */
-        .page {
-            display: none;
-            padding: 24px 20px 80px 20px;
-            animation: fadeSlideUp 0.35s ease-out;
-        }
-        @keyframes fadeSlideUp {
-            from { opacity: 0; transform: translateY(18px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        /* modern card */
-        .glass-card {
-            background: rgba(255, 255, 255, 0.85);
-            backdrop-filter: blur(20px);
-            border-radius: 44px;
-            padding: 28px 22px;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.05), 0 2px 6px rgba(0, 0, 0, 0.02);
-            border: 0.5px solid rgba(255, 255, 255, 0.7);
-            transition: transform 0.2s ease;
-        }
-
-        /* Hero section */
-        .hero-section {
-            text-align: center;
-            margin-bottom: 28px;
-        }
-        .modi-logo {
-            font-size: 46px;
-            font-weight: 800;
-            letter-spacing: -1px;
-            background: linear-gradient(125deg, #f15a24, #138808);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            display: inline-block;
-        }
-        .tagline {
-            font-size: 14px;
-            color: #3c5a3e;
-            font-weight: 500;
-            margin-top: 8px;
-            letter-spacing: 0.3px;
-        }
-        .leader-icon {
-            display: flex;
-            justify-content: center;
-            gap: 12px;
-            margin: 20px 0 10px;
-            align-items: center;
-        }
-        .leader-icon img {
-            width: 70px;
-            height: auto;
-            filter: drop-shadow(0 8px 12px rgba(0,0,0,0.1));
-            border-radius: 60px;
-            transition: transform 0.2s;
-        }
-
-        /* modern buttons */
-        .btn-scan {
-            background: linear-gradient(105deg, #F97316, #E25E00);
-            border: none;
-            width: 100%;
-            padding: 18px 0;
-            border-radius: 60px;
-            font-size: 18px;
-            font-weight: 600;
-            color: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 12px;
-            box-shadow: 0 8px 20px rgba(249,115,22,0.3);
-            transition: all 0.2s ease;
-            cursor: pointer;
-        }
-        .btn-scan:active { transform: scale(0.97); box-shadow: 0 4px 12px rgba(249,115,22,0.4);}
-        .btn-pay {
-            background: linear-gradient(95deg, #12805c, #1aa85c);
-            box-shadow: 0 10px 22px rgba(26,168,92,0.3);
-            border: none;
-            width: 100%;
-            padding: 16px;
-            border-radius: 60px;
-            font-weight: 700;
-            font-size: 18px;
-            color: white;
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-            transition: 0.2s;
-            cursor: pointer;
-        }
-        .btn-pay:active { transform: scale(0.97);}
-        
-        /* input modern */
-        .modern-input {
-            background: #f2f5f9;
-            border: 1px solid #e9edf2;
-            border-radius: 60px;
-            padding: 16px 22px;
-            font-size: 18px;
-            width: 100%;
-            margin: 18px 0 12px;
-            transition: all 0.2s;
-            font-weight: 500;
-        }
-        .modern-input:focus {
-            outline: none;
-            border-color: #F97316;
-            background: white;
-            box-shadow: 0 0 0 3px rgba(249,115,22,0.2);
-        }
-
-        /* bottom bar */
-        .bottom-nav {
-            position: fixed;
-            bottom: 16px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: calc(100% - 40px);
-            max-width: 460px;
-            background: rgba(255,255,255,0.92);
-            backdrop-filter: blur(20px);
-            border-radius: 60px;
-            display: flex;
-            justify-content: space-around;
-            padding: 12px 20px;
-            box-shadow: 0 6px 18px rgba(0,0,0,0.08);
-            border: 0.5px solid rgba(255,255,255,0.8);
-            z-index: 200;
-        }
-        .nav-item {
-            background: none;
-            border: none;
-            font-size: 22px;
-            font-weight: 500;
-            color: #8f9bb3;
-            padding: 8px 16px;
-            border-radius: 40px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 4px;
-            transition: all 0.2s;
-            cursor: pointer;
-        }
-        .nav-item i { font-size: 24px; }
-        .nav-item span { font-size: 12px; font-weight: 500; }
-        .nav-active {
-            color: #F97316;
-            background: rgba(249,115,22,0.12);
-        }
-        
-        /* scanner container rounded */
-        .scanner-box {
-            background: #00000010;
-            border-radius: 48px;
-            overflow: hidden;
-            margin-top: 20px;
-        }
-        #reader {
-            width: 100%;
-            border-radius: 48px;
-            background: #1a1e2b;
-        }
-        .merchant-highlight {
-            background: linear-gradient(110deg, #fff2e0, #ffffff);
-            border-radius: 60px;
-            padding: 14px 20px;
-            text-align: center;
-            margin-bottom: 18px;
-            font-weight: 700;
-            font-size: 22px;
-            color: #1f2a1b;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 12px;
-            box-shadow: inset 0 1px 2px #fff8, 0 6px 14px rgba(0,0,0,0.02);
-        }
-        .back-scanner {
-            background: none;
-            border: none;
-            font-size: 28px;
-            margin-bottom: 18px;
-            color: #F97316;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-weight: 500;
-        }
-        .profile-detail {
-            text-align: center;
-            margin-top: 30px;
-        }
-        .version-badge {
-            background: #eef2f5;
-            border-radius: 40px;
-            padding: 12px 20px;
-            font-size: 14px;
-            display: inline-block;
-        }
-        hr {
-            margin: 20px 0;
-            border-color: #f0e9df;
-        }
-        .safe-badge {
-            display: flex;
-            justify-content: center;
-            gap: 24px;
-            margin-top: 20px;
-            font-size: 12px;
-            color: #4f6f4a;
-        }
-
-        /* payment success micro-interaction */
-        .ripple-effect {
-            animation: softRipple 0.4s ease-out;
-        }
-        @keyframes softRipple {
-            0% { transform: scale(0.96); opacity: 0.8; }
-            100% { transform: scale(1); opacity: 1; }
-        }
-        button { cursor: pointer; }
-        i, .fas, .far { pointer-events: none; }
-        ::-webkit-scrollbar { width: 0; background: transparent; }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Kirana Billing</title>
+  <script src="https://unpkg.com/@zxing/browser@latest"></script>
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    #video { width: 100%; max-height: 400px; background: #000; }
+    .item-list { max-height: 400px; overflow-y: auto; }
+  </style>
 </head>
-<body>
-<div class="app-container">
-    <!-- Splash -->
-    <div class="splash" id="splashScreen">
-        <div class="splash-content">
-            <div class="modi-splash">ModiPay</div>
-            <div style="margin-top: 14px; font-size: 14px; color:#1FAA59;">सुरक्षित • तेज • आधुनिक</div>
-        </div>
+<body class="h-full bg-gray-50 font-sans">
+
+<div class="max-w-2xl mx-auto bg-white min-h-screen shadow-xl">
+
+  <!-- Header -->
+  <div class="bg-blue-600 text-white p-4 flex justify-between items-center">
+    <h1 class="text-2xl font-bold">🛒 My Kirana</h1>
+    <div class="text-right">
+      <p class="text-sm">Bill No: <span id="billNo">BILL-001</span></p>
+      <p class="text-sm">Total: <span id="grandTotal" class="font-bold">₹0.00</span></p>
+    </div>
+  </div>
+
+  <!-- Scanner -->
+  <div class="p-4 bg-gray-900">
+    <video id="video" autoplay muted playsinline></video>
+    <div id="scanResult" class="text-center text-green-400 font-bold mt-2"></div>
+  </div>
+
+  <!-- Items List -->
+  <div class="p-4">
+    <h2 class="font-semibold mb-3">Scanned Items</h2>
+    <div id="itemsList" class="item-list space-y-2"></div>
+  </div>
+
+  <!-- Total -->
+  <div class="fixed bottom-0 left-0 right-0 max-w-2xl mx-auto bg-white border-t p-4 shadow-2xl">
+    <div class="flex justify-between items-center mb-4">
+      <span class="text-xl font-bold">Total</span>
+      <span id="totalDisplay" class="text-3xl font-bold text-blue-600">₹0</span>
     </div>
 
-    <!-- floating orbs for depth -->
-    <div class="orb orb-1"></div>
-    <div class="orb orb-2"></div>
-    <div class="orb orb-3"></div>
-
-    <!-- Home Page -->
-    <div id="homePage" class="page">
-        <div class="hero-section">
-            <div class="leader-icon">
-                <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='48' fill='%23ff8c1a'/%3E%3Ctext x='50' y='67' font-size='40' text-anchor='middle' fill='white' font-weight='bold'%3E🇮🇳%3C/text%3E%3C/svg%3E" style="width:70px; border-radius: 60px;" alt="symbol">
-                <div class="modi-logo">ModiPay</div>
-                <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='48' fill='%231faa59'/%3E%3Ctext x='50' y='67' font-size='40' text-anchor='middle' fill='white'%3E🪙%3C/text%3E%3C/svg%3E" style="width:70px; border-radius: 60px;" alt="coin">
-            </div>
-            <div class="tagline">India’s most loved • Digital Payments</div>
-        </div>
-        <div class="glass-card">
-            <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
-                <i class="fas fa-qrcode" style="font-size: 32px; color:#F97316;"></i>
-                <h2 style="font-weight: 600;">Scan & Pay Instantly</h2>
-            </div>
-            <p style="color: #495e44; margin-bottom: 26px;">One scan. Seamless UPI experience. Zero hassle.</p>
-            <button class="btn-scan" id="homeScanBtn">
-                <i class="fas fa-camera"></i> Scan QR Code
-            </button>
-            <div class="safe-badge">
-                <span><i class="fas fa-shield-alt"></i> NPCI Certified</span>
-                <span><i class="fas fa-lock"></i> 256-bit Secure</span>
-            </div>
-        </div>
+    <div class="grid grid-cols-2 gap-3">
+      <button onclick="showPaymentModal()" 
+              class="bg-blue-600 hover:bg-blue-700 text-white py-4 rounded-xl text-lg font-semibold">
+        💰 Pay Now
+      </button>
+      <button onclick="clearBill()" 
+              class="bg-gray-200 hover:bg-gray-300 py-4 rounded-xl text-lg font-semibold">
+        New Bill
+      </button>
     </div>
+  </div>
 
-    <!-- Scanner Page -->
-    <div id="scannerPage" class="page">
-        <button class="back-scanner" id="backFromScannerBtn">
-            <i class="fas fa-arrow-left"></i> Back
-        </button>
-        <div class="glass-card" style="padding: 18px;">
-            <h3 style="display: flex; gap: 10px;"><i class="fas fa-qrcode"></i> Align QR within frame</h3>
-            <div class="scanner-box" id="scannerContainer">
-                <div id="reader" style="width:100%; min-height: 380px;"></div>
-            </div>
-            <p style="font-size: 13px; text-align: center; margin-top: 16px;"><i class="fas fa-lightbulb"></i> Hold steady, auto-detect UPI QR</p>
-        </div>
-    </div>
-
-    <!-- Payment Page (Enter Amount) -->
-    <div id="paymentPage" class="page">
-        <button class="back-scanner" id="backFromPaymentBtn">
-            <i class="fas fa-arrow-left"></i> Cancel
-        </button>
-        <div class="glass-card">
-            <div class="merchant-highlight">
-                <i class="fas fa-store" style="font-size: 26px;"></i>
-                <span id="merchantNameDisplay">Merchant</span>
-            </div>
-            <label style="font-weight: 500; margin-left: 12px;">₹ Amount (INR)</label>
-            <input type="number" id="amountInput" class="modern-input" placeholder="Enter amount" value="0" step="1">
-            <div style="display: flex; gap: 12px; margin: 10px 0 20px;">
-                <button class="quick-amt" data-amt="50">₹50</button>
-                <button class="quick-amt" data-amt="100">₹100</button>
-                <button class="quick-amt" data-amt="250">₹250</button>
-                <button class="quick-amt" data-amt="500">₹500</button>
-            </div>
-            <button class="btn-pay" id="confirmPayBtn">
-                <i class="fas fa-arrow-right-to-bracket"></i> Pay Securely
-            </button>
-            <div style="font-size: 12px; text-align: center; margin-top: 20px; color: #7d6e5c;">
-                <i class="fas fa-rupiah-sign"></i> UPI payment will redirect to your UPI app
-            </div>
-        </div>
-    </div>
-
-    <!-- Profile Page (Modern) -->
-    <div id="profilePage" class="page">
-        <div class="glass-card">
-            <div style="display: flex; justify-content: center; margin-bottom: 20px;">
-                <div style="background: linear-gradient(145deg, #ff9a3c, #FF7E05); width: 85px; height: 85px; border-radius: 80px; display: flex; align-items: center; justify-content: center;">
-                    <i class="fas fa-user-astronaut" style="font-size: 48px; color: white;"></i>
-                </div>
-            </div>
-            <h2 style="text-align: center;">ModiPay Ultimate</h2>
-            <p style="text-align: center; color: #3b5c33;">v3.0 • Smooth UPI Interface</p>
-            <hr>
-            <div style="padding: 10px 0;">
-                <div style="display: flex; justify-content: space-between; margin-bottom: 18px;"><span><i class="fas fa-id-card"></i> UPI Handle</span><span style="font-weight: 600;">modi@okhdfcbank</span></div>
-                <div style="display: flex; justify-content: space-between; margin-bottom: 18px;"><span><i class="fas fa-shield"></i> Security</span><span style="color: #1FAA59;"><i class="fas fa-check-circle"></i> Enabled</span></div>
-                <div style="display: flex; justify-content: space-between;"><span><i class="fas fa-clock"></i> Instant Refunds</span><span>✅ Yes</span></div>
-            </div>
-            <div class="version-badge" style="display: flex; justify-content: center; gap: 8px; margin-top: 22px;">
-                <i class="fas fa-microchip"></i> Made in India | Digital Bharat
-            </div>
-        </div>
-    </div>
-
-    <!-- bottom bar -->
-    <div class="bottom-nav">
-        <button class="nav-item" data-nav="homePage"><i class="fas fa-home"></i><span>Home</span></button>
-        <button class="nav-item" data-nav="profilePage"><i class="fas fa-user-circle"></i><span>Profile</span></button>
-    </div>
 </div>
 
-<!-- Audio elements for payments (immersive) -->
-<audio id="smallAudio" preload="auto">
-    <source src="https://files.catbox.moe/clvf5b.mp3" type="audio/mpeg">
+<!-- Payment Modal -->
+<div id="paymentModal" class="hidden fixed inset-0 bg-black/70 flex items-end">
+  <div class="bg-white w-full rounded-t-3xl p-6">
+    <h3 class="text-2xl font-bold mb-6">Select Payment</h3>
+    
+    <button onclick="cashPayment()" 
+            class="w-full py-6 mb-4 bg-green-500 hover:bg-green-600 text-white rounded-2xl text-xl font-semibold flex items-center justify-center gap-3">
+      💵 Cash Payment
+    </button>
 
+    <button onclick="upiPayment()" 
+            class="w-full py-6 bg-purple-600 hover:bg-purple-700 text-white rounded-2xl text-xl font-semibold flex items-center justify-center gap-3">
+      📱 UPI Payment (Razorpay)
+    </button>
 
-<audio id="mediumAudio">
-    <source src="https://files.catbox.moe/clvf5b.mp3" type="audio/mpeg">
-</audio>
+    <button onclick="closeModal()" 
+            class="w-full mt-6 text-gray-500 py-3">Cancel</button>
+  </div>
+</div>
 
-<audio id="largeAudio">
-    <source src="https://files.catbox.moe/clvf5b.mp3" type="audio/mpeg">
+<!-- Success Modal -->
+<div id="successModal" class="hidden fixed inset-0 bg-black/70 flex items-center justify-center">
+  <div class="bg-white rounded-3xl p-8 text-center max-w-xs">
+    <div id="successIcon" class="text-6xl mb-4">✅</div>
+    <h3 id="successTitle" class="text-2xl font-bold mb-2">Payment Successful</h3>
+    <p id="successMsg" class="text-gray-600 mb-6"></p>
+    <button onclick="closeSuccessModal()" 
+            class="bg-blue-600 text-white px-10 py-4 rounded-2xl w-full text-lg">OK - New Bill</button>
+  </div>
+</div>
 
-</audio>
 <script>
-    // fallback for audio: create web audio beep if not supported
-    function playBeep(type) {
-        try {
-            let audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-            let oscillator = audioCtx.createOscillator();
-            let gainNode = audioCtx.createGain();
-            oscillator.connect(gainNode);
-            gainNode.connect(audioCtx.destination);
-            oscillator.type = 'sine';
-            let frequency = type === 'small' ? 880 : (type === 'medium' ? 660 : 440);
-            oscillator.frequency.value = frequency;
-            gainNode.gain.setValueAtTime(0.2, audioCtx.currentTime);
-            gainNode.gain.exponentialRampToValueAtTime(0.00001, audioCtx.currentTime + 0.6);
-            oscillator.start();
-            oscillator.stop(audioCtx.currentTime + 0.3);
-            audioCtx.resume();
-        } catch(e) { console.log('audio not supported'); }
-    }
+// =============== PRODUCT DATABASE ===============
+const productDB = {
+  "8901030123456": { name: "Parle-G Biscuit", price: 10 },
+  "8901234567890": { name: "Amul Milk 500ml", price: 28 },
+  "8901764321098": { name: "Maggi Noodles", price: 12 },
+  "8902100123456": { name: "Surf Excel 1kg", price: 85 },
+  // Add more barcodes here
+};
 
-    // global state
-    let currentScanner = null;
-    let scannedUpiId = "";
-    let scannedMerchantName = "Merchant";
+// =============== STATE ===============
+let currentBill = [];
+let codeReader;
 
-    // DOM elements
-    const pages = ['homePage', 'scannerPage', 'paymentPage', 'profilePage'];
-    function showPage(pageId) {
-        pages.forEach(p => {
-            const el = document.getElementById(p);
-            if(el) el.style.display = 'none';
-        });
-        const activePage = document.getElementById(pageId);
-        if(activePage) activePage.style.display = 'block';
-        // update bottom nav active style
-        document.querySelectorAll('.nav-item').forEach(btn => {
-            const navFor = btn.getAttribute('data-nav');
-            if(navFor === pageId) btn.classList.add('nav-active');
-            else btn.classList.remove('nav-active');
-        });
-        // stop scanner if leaving scanner page
-        if(pageId !== 'scannerPage' && currentScanner) {
-            currentScanner.stop().catch(err=>console.log("stop err"));
-            currentScanner = null;
-        }
-    }
-
-    // open scanner with html5-qrcode
-    async function startQrScanner() {
-        if(currentScanner) {
-            try { await currentScanner.stop(); } catch(e) {}
-            currentScanner = null;
-        }
-        const readerElem = document.getElementById('reader');
-        if(!readerElem) return;
-        readerElem.innerHTML = ""; // clear
-        const html5QrCode = new Html5Qrcode("reader");
-        currentScanner = html5QrCode;
-        try {
-            await html5QrCode.start(
-                { facingMode: "environment" },
-                { fps: 12, qrbox: { width: 260, height: 260 }, aspectRatio: 1.0 },
-                (decodedText) => {
-                    // process UPI QR
-                    if(decodedText && decodedText.includes("upi://pay")) {
-                        try {
-                            let urlObj = new URL(decodedText);
-                            let params = new URLSearchParams(urlObj.search);
-                            let pa = params.get("pa") || "";
-                            let pn = params.get("pn") || "Merchant Store";
-                            if(pa) {
-                                scannedUpiId = pa;
-                                scannedMerchantName = decodeURIComponent(pn).replace(/\+/g,' ');
-                                document.getElementById('merchantNameDisplay').innerText = scannedMerchantName;
-                                // stop scanner then go to payment page
-                                html5QrCode.stop().then(()=>{ currentScanner=null; });
-                                showPage('paymentPage');
-                            } else { throw new Error("no pa");}
-                        } catch(err) { console.warn("invalid qr"); }
-                    }
-                },
-                (error) => { /* silent ignore */ }
-            );
-        } catch(err) { console.error("Camera error", err); alert("Camera access needed. Please allow permissions.");}
-    }
-
-    // Payment trigger with amount validation & audio effects
-    function processPayment() {
-        let amount = parseFloat(document.getElementById('amountInput').value);
-        if(isNaN(amount) || amount <= 0) {
-            alert("Enter a valid amount greater than 0");
-            return;
-        }
-        if(!scannedUpiId) {
-            alert("Merchant UPI missing, please scan QR again");
-            showPage('homePage');
-            return;
-        }
-        // play audio feedback based on amount range
-if(amount <= 50){
-    document.getElementById('smallAudio').play();
-}
-else if(amount <= 100){
-    document.getElementById('mediumAudio').play();
-}
-else{
-    document.getElementById('largeAudio').play();
-}
-        // Add ripple animation to confirm button
-        const payBtn = document.getElementById('confirmPayBtn');
-        payBtn.classList.add('ripple-effect');
-        setTimeout(()=> payBtn.classList.remove('ripple-effect'), 400);
-        
-        // build UPI intent url
-        const upiUrl = `upi://pay?pa=${encodeURIComponent(scannedUpiId)}&pn=${encodeURIComponent(scannedMerchantName)}&am=${amount}&cu=INR`;
-        // small haptic vibes if supported
-        if(navigator.vibrate) navigator.vibrate(50);
-        // redirect after micro delay
-        setTimeout(() => {
-            window.location.href = upiUrl;
-        }, 120);
-    }
-
-    // quick amount buttons
-    function attachQuickAmounts() {
-        document.querySelectorAll('.quick-amt').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                const amtVal = btn.getAttribute('data-amt');
-                document.getElementById('amountInput').value = amtVal;
-                // add subtle highlight effect
-                btn.style.transform = 'scale(0.96)';
-                setTimeout(()=> btn.style.transform = '', 120);
-            });
-        });
-    }
-
-    // event listeners and initialization
-    function bindEvents() {
-        // home scan button
-        const homeScan = document.getElementById('homeScanBtn');
-        if(homeScan) homeScan.addEventListener('click', () => {
-            showPage('scannerPage');
-            startQrScanner();
-        });
-        // back from scanner
-        const backScanner = document.getElementById('backFromScannerBtn');
-        if(backScanner) backScanner.addEventListener('click', () => {
-            if(currentScanner) { currentScanner.stop().catch(e=>{}); currentScanner=null; }
-            showPage('homePage');
-        });
-        // back from payment
-        const backPayment = document.getElementById('backFromPaymentBtn');
-        if(backPayment) backPayment.addEventListener('click', () => {
-            showPage('homePage');
-            scannedUpiId = "";
-        });
-        // pay now
-        const payBtn = document.getElementById('confirmPayBtn');
-        if(payBtn) payBtn.addEventListener('click', processPayment);
-        
-        // bottom navigation
-        document.querySelectorAll('.nav-item').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                const target = btn.getAttribute('data-nav');
-                if(target === 'scannerPage') return;
-                if(target === 'homePage') {
-                    if(currentScanner) { currentScanner.stop().catch(()=>{}); currentScanner=null; }
-                    showPage('homePage');
-                } else if(target === 'profilePage') {
-                    if(currentScanner) { currentScanner.stop().catch(()=>{}); currentScanner=null; }
-                    showPage('profilePage');
-                } else if(target === 'paymentPage') {
-                    if(scannedUpiId) showPage('paymentPage');
-                    else alert('Scan a QR code first');
-                } else showPage(target);
-            });
-        });
-        
-        attachQuickAmounts();
-        // fix amount input restrictions
-        const amountInp = document.getElementById('amountInput');
-        if(amountInp) {
-            amountInp.addEventListener('input', function(e) {
-                let val = parseFloat(this.value);
-                if(val < 0) this.value = 0;
-            });
-        }
-    }
-
-    // ensure splash disappears manually after animation, but avoid ghost
-    setTimeout(() => {
-        const splashDiv = document.getElementById('splashScreen');
-        if(splashDiv) splashDiv.style.display = 'none';
-    }, 2000);
-
-    // start with home
-    showPage('homePage');
-    bindEvents();
-    // preload / dummy audio context resume on first tap (ios friendly)
-    document.body.addEventListener('touchstart', () => {
-        let audioContext = new (window.AudioContext || window.webkitAudioContext)();
-        if(audioContext.state === 'suspended') audioContext.resume();
-    }, { once: true });
+// =============== SCANNER ===============
+async function startScanner() {
+  codeReader = new ZXingBrowser.BrowserMultiFormatReader();
+  
+  try {
+    const videoInputDevices = await codeReader.listVideoInputDevices();
+    const selectedDevice = videoInputDevices[videoInputDevices.length - 1]; // back camera preference
     
-    // extra style for quick-amt buttons
-    const style = document.createElement('style');
-    style.innerHTML = `.quick-amt { background: #f1f5f9; border: none; border-radius: 40px; padding: 10px 16px; font-weight: 600; font-size: 16px; transition: all 0.1s; box-shadow: 0 1px 2px #ddd; cursor:pointer; } .quick-amt:active { background:#ffedd5; transform:scale(0.96); }`;
-    document.head.appendChild(style);
-    
-    // additional glow for bottom nav
-    console.log("ModiPay Ultimate — smooth UI loaded");
+    await codeReader.decodeFromVideoDevice(
+      selectedDevice.deviceId,
+      'video',
+      (result, err) => {
+        if (result) {
+          handleBarcode(result.getText());
+        }
+      }
+    );
+  } catch (err) {
+    console.error(err);
+    document.getElementById('scanResult').innerHTML = 
+      '<span class="text-red-500">Camera permission needed</span>';
+  }
+}
+
+// Handle scanned barcode
+function handleBarcode(code) {
+  const product = productDB[code] || { 
+    name: `Item (${code.slice(-6)})`, 
+    price: 50 
+  };
+
+  currentBill.push({
+    barcode: code,
+    name: product.name,
+    price: product.price,
+    qty: 1
+  });
+
+  renderBill();
+  document.getElementById('scanResult').textContent = `✅ \( {product.name} - ₹ \){product.price}`;
+  
+  setTimeout(() => {
+    document.getElementById('scanResult').textContent = '';
+  }, 1500);
+}
+
+function renderBill() {
+  const container = document.getElementById('itemsList');
+  container.innerHTML = '';
+
+  currentBill.forEach((item, index) => {
+    const div = document.createElement('div');
+    div.className = "flex justify-between items-center bg-gray-50 p-3 rounded-xl";
+    div.innerHTML = `
+      <div>
+        <p class="font-medium">${item.name}</p>
+        <p class="text-sm text-gray-500">${item.barcode}</p>
+      </div>
+      <div class="text-right">
+        <p class="font-bold">₹${item.price}</p>
+        <button onclick="removeItem(${index})" class="text-red-500 text-xs">Remove</button>
+      </div>
+    `;
+    container.appendChild(div);
+  });
+
+  const total = currentBill.reduce((sum, item) => sum + item.price, 0);
+  document.getElementById('totalDisplay').textContent = `₹${total}`;
+  document.getElementById('grandTotal').textContent = `₹${total}`;
+}
+
+// Remove item
+function removeItem(index) {
+  currentBill.splice(index, 1);
+  renderBill();
+}
+
+// =============== PAYMENT ===============
+function showPaymentModal() {
+  const total = currentBill.reduce((sum, item) => sum + item.price, 0);
+  if (total === 0) {
+    alert("No items in bill!");
+    return;
+  }
+  document.getElementById('paymentModal').classList.remove('hidden');
+}
+
+function closeModal() {
+  document.getElementById('paymentModal').classList.add('hidden');
+}
+
+function cashPayment() {
+  closeModal();
+  showSuccess("Cash Payment Received", "Thank you!");
+}
+
+async function upiPayment() {
+  closeModal();
+  const total = currentBill.reduce((sum, item) => sum + item.price, 0);
+
+  const options = {
+    key: "rzp_live_SlFpkLaE2aao9D", // Your live key
+    amount: total * 100,
+    currency: "INR",
+    name: "My Kirana Store",
+    description: "Bill Payment",
+    handler: function (response) {
+      showSuccess("UPI Payment Successful", "Payment ID: " + response.razorpay_payment_id);
+    },
+    modal: {
+      ondismiss: function() {
+        console.log('Checkout closed');
+      }
+    },
+    theme: { color: "#2563eb" }
+  };
+
+  const rzp = new Razorpay(options);
+  rzp.open();
+}
+
+function showSuccess(title, msg) {
+  document.getElementById('successTitle').textContent = title;
+  document.getElementById('successMsg').textContent = msg;
+  document.getElementById('successModal').classList.remove('hidden');
+}
+
+function closeSuccessModal() {
+  document.getElementById('successModal').classList.add('hidden');
+  clearBill();
+}
+
+// Clear bill for next customer
+function clearBill() {
+  currentBill = [];
+  renderBill();
+  document.getElementById('billNo').textContent = `BILL-${Math.floor(1000 + Math.random() * 9000)}`;
+}
+
+// =============== START APP ===============
+window.onload = () => {
+  startScanner();
+  clearBill();
+};
 </script>
 </body>
 </html>
